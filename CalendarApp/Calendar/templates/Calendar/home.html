@@ -1,0 +1,17 @@
+<!--CREATE A BASE.HTML FILE. MODIFY HOME AND REGISTER FILES TO INHERIT FROM IT. CREATE A LOGIN PAGE AND A LOG OUT PAGE-->
+{% extends "Calendar/base.html" %} <!--Extending the parent template-->
+{% block content %}
+    <div class="text-center">
+        <div class = "jumbotron">
+            <h1>Welcome to CalendarCalc! :D</h1>
+        </div>
+        <div class="border-top pt-3">
+            <a class = "btn btn-primary btn-lg" href="{% url 'Calendar-register' %}">Start</a>
+            {% if user.is_authenticated %}
+                <a class = "btn btn-primary btn-lg" href="{% url 'Calendar-logout' %}">Log Out</a>
+            {% else %}
+            <a class = "btn btn-primary btn-lg" href="{% url 'Calendar-login' %}">Log In</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
