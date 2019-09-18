@@ -7,3 +7,9 @@ class UserRegisterForm(UserCreationForm): # New form that inherits from the User
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField()  
+    class Meta:
+        model = User
+        fields = ['username', 'email'] # Create a form that only lets the user change his/her usename and email

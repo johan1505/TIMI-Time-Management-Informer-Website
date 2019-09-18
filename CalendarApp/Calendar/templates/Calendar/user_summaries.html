@@ -1,0 +1,30 @@
+<!-- Create an URL that lets a user create a new summary:THIS IS WHERE THE WEBSITE HAS TO USER GOOGLE CALENDAR'S APIs
+     Make the New Summary button be also part of the Summaries template
+     Add Pagination
+(IMPROVE)FORMAT THIS HTMAL FILE TO DISPLAY ALL THE SUMMARIES OF THE CURRENT USER.
+-->
+{% extends "Calendar/base.html" %} <!--Extending the parent template-->
+{% block content %}
+    <h1 class="mb-4"> Summaries by {{ user.username }} </h1>
+    {% for summary in summaries %}
+    <article class="media content-section mb-4">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{% url 'Calendar-Summary-Detail' summary.id %}">{{ summary.startDate|date:"F d, Y" }} -- {{ summary.endDate|date:"F d, Y" }}</a>
+                <div class="row mt-3">
+                    <div class="col-md-2">
+                        {% for activity in summary.activities %}
+                            <p> {{ activity }}  </p>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-2">
+                        {% for times in summary.times %}
+                            <p> {{ times }}  </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+{% endblock content%}

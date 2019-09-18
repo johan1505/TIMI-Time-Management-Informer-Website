@@ -10,13 +10,46 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'Calendar/main.css' %}">
     </head>
-    <body>
-        
-            <main role="main" class="container" >
-                    <div>
-                        {% block content %}{% endblock %} <!--Child templates will put their code here-->
+    <body>  
+        <header class="site-header">
+            <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+                <div class="container">
+                    <a class="navbar-brand mr-4" href="{% url 'Calendar-home' %}">CalendarCalc</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarToggle">
+                        <div class="navbar-nav mr-auto">   <!--Note: These are NOT hardcoded as they use the url tag from django. Changes to url paths are only made in the project's url.py file-->
+                            <a class="nav-item nav-link" href="{% url 'Calendar-home' %}">Home</a> <!--This button takes us to the blog(home) page-->
+                        </div>
+                        <!-- Navbar Right Side -->
+                        <div class="navbar-nav">
+                            {% if user.is_authenticated %} <!--Change the Nav. bar depeding on whether or not the user is logged in-->
+                                <a class="nav-item nav-link" href="{% url 'Calendar-logout' %}">Logout</a>
+                                <a class="nav-item nav-link" href="{% url 'Calendar-profile' %}">Profile</a>
+                                <a class="nav-item nav-link" href="#">New Week Summary</a>
+                            {% else %}
+                                <a class="nav-item nav-link" href="{% url 'Calendar-login' %}">Login</a>
+                                <a class="nav-item nav-link" href="{% url 'Calendar-register' %}">Register</a>
+                            {% endif %}
+                        </div>
                     </div>
-            </main>
+                </div>
+            </nav>
+        </header>
+        
+        <main role="main" class="container" >
+            <div class="col-md-8">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="border-top pt-4">
+                {% block content %}{% endblock %}<!--Child templates will put their code here-->
+            </div>
+        </main>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->

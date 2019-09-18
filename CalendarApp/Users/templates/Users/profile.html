@@ -1,0 +1,25 @@
+{% extends "Calendar/base.html" %} 
+{% load crispy_forms_tags %}
+{% block content %}
+<!--ADD TWO BUTTONS ONE TO GO TO THE PROFILE AND THE OTHER TO GO THE SUMMARIES-->
+
+<!--IF A PICTURE NEEDS TO BE ADDED, LOOK AT THE TUTORIAL SERIES PART 8!-->
+<div class="content-section">
+    <div class="media-body">
+        <h2 class="account-heading">{{user.username}}</h2>
+        <p class="text-secondary border-top pt-2">{{user.email}}</p>
+    </div> 
+    <form method="POST">
+        {% csrf_token %} <!--Token for security required by django-->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Profile Info</legend>           
+            {{ u_form|crispy }}  <!--u_form and p_form were passed in as contexts from the profile fuction of users' views-->
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Update</button> <!--the type "submit" allows the form t be submitted when the button is pressed-->
+            <a class="btn btn-outline-info" href="{% url 'Calendar-User-Summaries' user.username %}">Summaries</a>
+        </div>    
+
+    </form>
+</div>
+{% endblock content %}
