@@ -1,14 +1,133 @@
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, DeleteView
+import datetime
+import httplib2
+import json
+from googleapiclient.discovery import build
+from oauth2client.client import OAuth2WebServerFlow
+from django.contrib import messages
+from django.conf import settings
+from django.urls import reverse
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
+from django.views.generic import ListView, DetailView, DeleteView, View
 from .models import Summary
 from django.contrib.auth.models import User
+from datetime import timedelta, date
+
 
 def home(request):
     return render(request, 'Calendar\home.html')
 
-#Using a Class view. This class inherits from the class ListView
-#THIS SHOULD BE GOOD TO GO....
+# USE ENVIRONMENTAL VARIABLES FOR THE CLIENTE_ID, CLIENT_SECRET, and REDIRECT_URI
+class BuildFlow:
+    def __init__(self):        
+        self.flow = OAuth2WebServerFlow(settings.CLIENT_ID,                
+                                        settings.CLIENT_SECRET,
+                                        scope='https://www.googleapis.com/auth/calendar.readonly',
+                                        redirect_uri=settings.REDIRECT_URI)
+
+#Note: 
+#The step1_get_authroize_url() here is an internal method of OAuth2WebServerFlow which generates the url based on scope, 
+# client_id and client secret.
+class OAuth(View):
+    def get(self, request, *args, **kwargs):
+        build_flow = BuildFlow()                                  # Build the flow
+        generated_url = build_flow.flow.step1_get_authorize_url() # Get the authorization url
+        return HttpResponseRedirect(generated_url)                # redirect the user to the authorization url
+
+# Helper function
+def setTimes():
+    todaysWeekDay = datetime.datetime.today().weekday() # Return the day of the week as an integer, where Monday is 0 and Sunday is 6.
+    today = datetime.datetime.utcnow()
+    startDate = None
+    endDate = None
+    if (todaysWeekDay == 0): # Monday
+        startDate = today - timedelta(days=1)
+        endDate = today + timedelta(days=5)
+    elif (todaysWeekDay == 1): # Tuesday
+        startDate = today - timedelta(days=2)
+        endDate = today + timedelta(days=4)
+    elif (todaysWeekDay == 2): # Wednesday
+        startDate = today - timedelta(days=3)
+        endDate = today + timedelta(days=3)
+    elif (todaysWeekDay == 3): # Thursday
+        startDate = today - timedelta(days=4)
+        endDate = today + timedelta(days=2)
+    elif (todaysWeekDay == 4): # Friday
+        startDate = today - timedelta(days=5)
+        endDate = today + timedelta(days=1)
+    elif (todaysWeekDay == 5): # Saturday
+        startDate = today - timedelta(days=6)
+        endDate = today
+    else:                      # Sunday
+        startDate = today
+        endDate = today + timedelta(days=6)
+
+    # Make both startDate and endDate begin from 0 times
+    #startDate = datetime.datetime.combine(startDate, startDate.min.time()) 
+    endDate = datetime.datetime.combine(endDate, endDate.max.time())
+    startDate = startDate.isoformat() + 'Z' # Stores the nearest Monday from today
+    endDate = endDate.isoformat() + 'Z' # Stores the nearest Sunday from today
+    return (startDate, endDate)
+
+
+# Note:
+# A Credentials object holds refresh and access tokens that authorize access to a single user's data. 
+# These objects are applied to httplib2.Http objects to authorize access. They only need to be applied once and can be stored. 
+# THIS VIEW SHOULD ONLY GET REQUESTS!
+class OAuth2CallBack(View):
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get('code', False) # get the code 
+        if not code: # if there is no code then the user most likely declined permission
+            messages.warning(request, f'CalendarCalc was denied access to your Google calendars')
+            return redirect('Calendar-User-Summaries')
+
+        oauth2 = BuildFlow() # Build a flow
+        credentials = oauth2.flow.step2_exchange(code) #Exchanges a code for OAuth2Credentials. 
+                                                       #Returns An OAuth2Credentials object that can be used to authorize requests.
+
+        http = httplib2.Http()
+        http = credentials.authorize(http)                 # authorize credentials
+
+        credentials_js = json.loads(credentials.to_json()) # creates a json file from the credentials
+        access_token = credentials_js['access_token']      # Store the access token in case we need it again!
+        request.session['access_token'] = access_token
+        service = build('calendar', 'v3', credentials=credentials) # Create a service TO USE GOOGLE CALENDAR API calls
+
+        times = setTimes()
+        startDate = times[0] # Closest Monday 
+        endDate = times[1]   # Closest Sunday
+
+        # create an event result with timeMin and timeMax
+        #PROBLEM: RETURNS A LIST OF EVENTS THAT IS NOT ACCURATE. THE EVENT 
+        events_result = service.events().list(calendarId='primary', timeMin=startDate,
+                                        timeMax=endDate, singleEvents=True,
+                                        orderBy='startTime').execute() 
+
+        
+        events = events_result.get('items', [])            # events is a list of dictionaries. Each dictionary contains information of an event
+        
+        userSummary = Summary(user = self.request.user, activities = [], times = [], startDate = startDate, endDate = endDate)# Creates a summary for the current user logged in
+        eventsFound = {}                                   # HashTable for events found
+
+        if not events:
+            messages.warning(request, f'The Google account that was linked to yout account has no calendars for this week!s')
+            return redirect('Calendar-User-Summaries')     # Replace this with something else
+        else :
+            for event in events: 
+                startTime = datetime.datetime.strptime(event['start'].get('dateTime'), '%Y-%m-%dT%H:%M:%S%z')
+                endTime = datetime.datetime.strptime(event['end'].get('dateTime'), '%Y-%m-%dT%H:%M:%S%z')
+                timeSpentInEvent = endTime - startTime     # this is a datetime.timedelta object
+                if event['summary'] in eventsFound:
+                    eventsFound[event['summary']] = eventsFound[event['summary']] + timeSpentInEvent # add the time of the evend already found
+                else :     
+                    eventsFound[event['summary']] = timeSpentInEvent # gets how long the event lasts = set it equal to the time the event lasted
+
+            for event in eventsFound:                        # For every event found
+                userSummary.activities.append(event)         # append the current event title
+                userSummary.times.append(eventsFound[event]) # append the timeSpent of the current event
+
+            userSummary.save()                               # save the constructed summary
+        return HttpResponseRedirect(reverse('Calendar-User-Summaries'))
+
 class UserSummariesListView(ListView):
     model = Summary
     template_name = 'Calendar/user_summaries.html' #<app>/<model>_<viewtype>.html
@@ -16,7 +135,7 @@ class UserSummariesListView(ListView):
    # ordering = ['-date_posted'] # Order posts from newest to oldest
    # paginate_by = 5 # Will make the home page only display two post per page
     def get_queryset(self):
-      #  user = get_object_or_404(User, username=self.kwargs.get('username')) # Get an user that matches the  username passed in by the URL
+      # user = get_object_or_404(User, username=self.kwargs.get('username')) # Get an user that matches the  username passed in by the URL
         return Summary.objects.filter(user=self.request.user).order_by('-startDate') # Filter the query to only get the posts with author = current user
 
 
@@ -26,4 +145,5 @@ class SummaryDetailView(DetailView):
 
 class SummaryDeleteView(DeleteView):
     model = Summary
-    success_url = "/"
+    success_url = "/Summaries"
+

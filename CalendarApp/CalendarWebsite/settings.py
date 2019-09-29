@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
+# Gets variables from the .env file
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -31,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'mathfilters',
     'crispy_forms',
     'Users.apps.UsersConfig',
     'Calendar.apps.CalendarConfig',
@@ -76,20 +81,13 @@ WSGI_APPLICATION = 'CalendarWebsite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
-
 DATABASES = {  
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'CalendarDatabase',
-        'USER': 'postgres',                      # Not used with sqlite3.
-        'PASSWORD': 'Jorge_1002',                  # Not used with sqlite3.
-        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'USER': 'postgres',                  # Not used with sqlite3.
+        'PASSWORD': env('PASSWORD'),         # Not used with sqlite3.
+        'HOST': 'localhost',                 # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -130,9 +128,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = 'Calendar-User-Summaries' # Once the logged in, the user will be redirected to the home page
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+LOGIN_REDIRECT_URL = 'Calendar-User-Summaries' # Once  logged in, the user will be redirected to the home page
 LOGIN_URL = 'Calendar-login' # If the user is not logged in and tries to go to profile page, he/she will be redirected to the login page
 
+CLIENT_ID = env('CLIENT_ID')
+CLIENT_SECRET = env('CLIENT_SECRET')
+REDIRECT_URI = 'http://localhost:8000/Summary/new/callback/'

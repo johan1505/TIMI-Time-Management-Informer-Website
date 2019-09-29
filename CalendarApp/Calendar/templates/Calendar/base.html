@@ -9,6 +9,7 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'Calendar/main.css' %}">
+        <script src="https://kit.fontawesome.com/1fa8d249de.js"></script>
     </head>
     <body>  
         <header class="site-header">
@@ -27,7 +28,7 @@
                             {% if user.is_authenticated %} <!--Change the Nav. bar depeding on whether or not the user is logged in-->
                                 <a class="nav-item nav-link" href="{% url 'Calendar-logout' %}">Logout</a>
                                 <a class="nav-item nav-link" href="{% url 'Calendar-profile' %}">Profile</a>
-                                <a class="nav-item nav-link" href="#">New Week Summary</a>
+                                <a class="nav-item nav-link" href="{% url 'Calendar-Summary-New' %}">New Week Summary</a>
                             {% else %}
                                 <a class="nav-item nav-link" href="{% url 'Calendar-login' %}">Login</a>
                                 <a class="nav-item nav-link" href="{% url 'Calendar-register' %}">Register</a>

@@ -1,28 +1,32 @@
 {% extends "Calendar/base.html" %}
+{% load mathfilters %}
+{% load app_filters %}
 {% block content %}
 <article class="media content-section">
         <!--<img class="rounder-circle article-img" src="{{ object.author.profile.image.url}}"> --> <!--Get the image of the posts' author-->
         <div class="media-body">
             <div class="article-metadata">
-                <small class="text-muted">{{ object.startDate|date:"F d, Y" }} -- {{ object.endDate|date:"F d, Y" }}</small>
-
-                <div class="row mt-3">
-                        <div class="col-md-2">
-                            {% for activity in object.activities %}
-                                <p> {{ activity }}  </p>
-                            {% endfor %}
-                        </div>
-                        <div class="col-md-2">
-                            {% for times in object.times %}
-                                <p> {{ times }}  </p>
-                            {% endfor %}
-                        </div>
+                <h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
+                <div class="container">
+                    <div class="row mt-5">
+                            <div class="col-6 col-sm-5">
+                                {% for activity in object.activities %}
+                                    <p> {{ activity }}  </p>
+                                {% endfor %}
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                {% for times in object.times %}
+                                    <p>{{ times|get_total_hours }} hours</p> <!--The get_total_hours is a user-defined filter created at 
+                                                                                the templatetags->app_filters.py file-->
+                                {% endfor %}
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
 </article>
 <div>           
     <a class="btn btn-outline-danger mt-1 mb-1" href="{% url 'Calendar-Summary-Delete' object.id %}">Delete</a>
-    <a class="btn btn-outline-primary mt-1 mb-1" href="{% url 'Calendar-User-Summaries' %}">Back to Summaries</a>           
+    <a class="btn btn-outline-secondary mt-1 mb-1" href="{% url 'Calendar-User-Summaries' %}">Back to Summaries</a>           
 </div> 
 {% endblock content %}

@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from Users import views as user_views # import User views
 from django.contrib.auth import views as auth_views #Import views for authentication
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('profile/', user_views.profile, name = 'Calendar-profile'),

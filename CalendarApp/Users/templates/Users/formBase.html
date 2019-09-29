@@ -10,22 +10,22 @@
                     {% elif type == "login" %}
                         <legend class="border-bottom mb-4">Log In</legend>
                     {% endif %}
-                    {{ form|crispy }} <!--as_p will render the form as a parapgrah. The verticual bar(|) is used to filter the form thorugh crispy_forms-->
+                    {{ form|crispy }} <!--The verticual bar(|) is used to filter the form thorugh crispy_forms-->
                 </fieldset>
                 <div class="form-group">
                     {% if type == "register" %}
-                        <button class="btn btn-outline-info" type="submit">Sign Up</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
+                        <button class="btn btn-outline-secondary" type="submit">Sign Up</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
                     {% elif type == "login" %}                                                <!--By pressing submit, it is going to do a post requet back to the its route with the data from the form--> 
-                        <button class="btn btn-outline-info" type="submit">Log In</button>
+                        <button class="btn btn-outline-secondary" type="submit">Log In</button>
                     {% endif %}
                 </div>                                                                 
             </form>
             <div class="border-top pt-3">
                 <small class="text-muted">
                     {% if type == "register" %}
-                        Already Have An Account? <a class="ml-2" href="{% url 'Calendar-login' %}">Log In</a>
+                        Already Have An Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-login' %}">Log In</a>
                     {% elif type == "login" %}
-                        Nedd  a New Account? <a class="ml-2" href="{% url 'Calendar-register' %}">Sign Up</a>
+                        Nedd  a New Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-register' %}">Sign Up</a>
                     {% endif %}
                 </small>
             </div>
