@@ -1,5 +1,6 @@
 body {
-  background: #fafafa;
+  background: #f5f6fa;
+  font-family: 'Lato', sans-serif;
   color: #333333;
   margin-top: 5rem;
 }
@@ -21,11 +22,30 @@ ul {
 }
 
 .bg-steel {
-  background-color: #e17055;
+  background-color: #55d6aa;
 }
 
 .site-header .navbar-nav .nav-link {
+  font-family: 'Fira Code', monospace;
+  position: relative;
   color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link::before {
+  content: '';
+  display: block;
+  height: 5px;
+  background-color: #444;
+
+  position: absolute;
+  top: 0;
+  width: 0%;
+
+  transition: all ease-in-out 250ms;
+} 
+
+.site-header .navbar-nav .nav-link:hover::before {
+  width: 75%;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -75,7 +95,7 @@ a.article-title:hover {
 
 .summary-section{
   width: 500px;
-  background:#e17055;
+  background:#55d6aa;
   border: 5px solid #ffffff;
   margin-bottom: 20px;;
   padding: 15px 80px;
