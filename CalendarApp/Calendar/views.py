@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, DeleteView, View
 from .models import Summary
 from django.contrib.auth.models import User
@@ -27,7 +28,7 @@ class BuildFlow:
 #Note: 
 #The step1_get_authroize_url() here is an internal method of OAuth2WebServerFlow which generates the url based on scope, 
 # client_id and client secret.
-class OAuth(View):
+class OAuth(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         build_flow = BuildFlow()                                  # Build the flow
         generated_url = build_flow.flow.step1_get_authorize_url() # Get the authorization url
@@ -128,7 +129,7 @@ class OAuth2CallBack(View):
             userSummary.save()                               # save the constructed summary
         return HttpResponseRedirect(reverse('Calendar-User-Summaries'))
 
-class UserSummariesListView(ListView):
+class UserSummariesListView(LoginRequiredMixin, ListView):
     model = Summary
     template_name = 'Calendar/user_summaries.html' #<app>/<model>_<viewtype>.html
     context_object_name = 'summaries'
@@ -139,11 +140,21 @@ class UserSummariesListView(ListView):
         return Summary.objects.filter(user=self.request.user).order_by('-startDate') # Filter the query to only get the posts with author = current user
 
 
-class SummaryDetailView(DetailView):
+class SummaryDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Summary
     template_name = 'Calendar/summary_detail.html'
+    def test_func(self):         
+        summary = self.get_object() # Get the summary that is being updated
+        if self.request.user == summary.user: # If the current user is the author of the post then allow it him/her to update it
+            return True
+        return False
 
-class SummaryDeleteView(DeleteView):
+class SummaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Summary
     success_url = "/Summaries"
+    def test_func(self):         
+        summary = self.get_object() # Get the summary that is being updated
+        if self.request.user == summary.user: # If the current user is the author of the post then allow it him/her to update it
+            return True
+        return False
 

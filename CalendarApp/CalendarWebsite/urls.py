@@ -27,3 +27,5 @@ urlpatterns = [
     path('logout/',  auth_views.LogoutView.as_view(template_name = 'calendar/home.html'), name ='Calendar-logout'),
     path('', include('Calendar.urls'), name = 'Calendar-home'),
 ]
+
+handler403= 'Users.views.permission_denied'

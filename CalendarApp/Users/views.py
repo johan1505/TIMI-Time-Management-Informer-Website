@@ -5,6 +5,14 @@ from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+def permission_denied(request, exception): # 403 Error view. Instead of showing a 403 text, it will redirect the user to his profile with a message that informs that he/she does not have permissions
+    messages.warning(request, f'You do not have permission to access the requested summary')
+    return redirect('Calendar-profile')
+
+def handler404(request, exception):
+    messages.warning(request, f'You tried to access an non-existent destination of CalendarCalc')
+    return redirect('Calendar-home')
+
 def register(request):
     if request.method == 'POST': # When the user tries to sign up with a new account a request is created and is checked here 
         form = UserRegisterForm(request.POST )# Form created with the info inputted from the user( username, passwords )
