@@ -1,5 +1,4 @@
 {% extends "Calendar/base.html" %}
-{% load mathfilters %}
 {% load app_filters %}
 {% block content %}
 <article class="media content-section">
@@ -16,7 +15,20 @@
                             </div>
                             <div class="col-6 col-sm-4">
                                 {% for times in object.times %}
-                                    <p>{{ times|get_total_hours }} hours</p> <!--The get_total_hours is a user-defined filter created at 
+                                    <p>
+                                        <!--
+                                            DOES THE JOB, kind of. Might need to add extra if, elif statements to take into 
+                                            account all the possible combinations of hours and minutes 
+                                        -->
+                                    
+                                        {% if times|get_total_hours %}
+                                            {{ times|get_total_hours }} hours  
+                                        {% endif %}
+                                        {% if  times|get_total_minutes %}
+                                            , {{ times|get_total_minutes }} minutes
+                                        {% endif %}
+                                    </p>
+                                        <!--The get_total_hours is a user-defined filter created at 
                                                                                 the templatetags->app_filters.py file-->
                                 {% endfor %}
                             </div>
