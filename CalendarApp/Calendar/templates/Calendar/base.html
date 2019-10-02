@@ -23,14 +23,15 @@
                             <div class="collapse navbar-collapse" id="navbarToggle">
                                 <!-- Navbar Right Side -->
                                 <div class="navbar-nav ml-auto">
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-home' %}">Home</a>
+                                        <a class="nav-item nav-link" href="{% url 'Calendar-home' %}">Home<i class="fas fa-home navigationBarIcons"></i></a>
                                     {% if user.is_authenticated %} <!--Change the Nav. bar depeding on whether or not the user is logged in-->
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-logout' %}">Logout</a>
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-profile' %}">Profile</a>
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-Summary-New' %}">New Summary</a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-profile' %}">Profile<i class="fas fa-user navigationBarIcons"></i></a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-User-Summaries' %}">Summaries<i class="fas fa-archive navigationBarIcons"></i></a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-Summary-New' %}">New<i class="fas fa-plus navigationBarIcons"></i></a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-logout' %}">Logout<i class="fas fa-sign-out-alt navigationBarIcons"></i></a>
                                     {% else %}
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-login' %}">Login</a>
-                                        <a class="nav-item nav-link" href="{% url 'Calendar-register' %}">Register</a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-login' %}">Login<i class="fas fa-sign-in-alt navigationBarIcons"></i></a>
+                                        <a class="navbar-nav nav-link" href="{% url 'Calendar-register' %}">Register<i class="fas fa-user-plus navigationBarIcons"></i></a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -51,6 +52,7 @@
                 {% block content %}{% endblock %}<!--Child templates will put their code here-->
             </div>
         </main>
+
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->

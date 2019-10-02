@@ -5,10 +5,16 @@ body {
   margin-top: 5rem;
 }
 
-i{
+.homeIcons{
   font-size: 80px;
   margin-top: 40px;
 }
+
+.navigationBarIcons{
+  font-size:15px;
+  margin: 4px;
+}
+
 span{
   color: #000000;
 }

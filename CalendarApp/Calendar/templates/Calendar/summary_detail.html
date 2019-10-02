@@ -22,10 +22,18 @@
                                         -->
                                     
                                         {% if times|get_total_hours %}
-                                            {{ times|get_total_hours }} hours  
+                                            {% if times|get_total_hours == 1%}
+                                                {{ times|get_total_hours }} hour 
+                                            {% elif times|get_total_hours > 1 %}
+                                                {{ times|get_total_hours }} hours
+                                            {% endif %}
                                         {% endif %}
-                                        {% if  times|get_total_minutes %}
-                                            , {{ times|get_total_minutes }} minutes
+                                        {% if times|get_total_minutes %}
+                                            {% if times|get_total_minutes == 1%}
+                                                {{ times|get_total_minutes }} minute
+                                            {% elif times|get_total_minutes > 1 %}
+                                                {{ times|get_total_minutes }} minutes
+                                            {% endif %}
                                         {% endif %}
                                     </p>
                                         <!--The get_total_hours is a user-defined filter created at 
