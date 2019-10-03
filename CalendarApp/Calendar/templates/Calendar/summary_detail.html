@@ -14,13 +14,9 @@
                                 {% endfor %}
                             </div>
                             <div class="col-6 col-sm-4">
+                                <!-- Note: The get_total_hours is a user-defined filter created at the templatetags->app_filters.py file-->
                                 {% for times in object.times %}
                                     <p>
-                                        <!--
-                                            DOES THE JOB, kind of. Might need to add extra if, elif statements to take into 
-                                            account all the possible combinations of hours and minutes 
-                                        -->
-                                    
                                         {% if times|get_total_hours %}
                                             {% if times|get_total_hours == 1%}
                                                 {{ times|get_total_hours }} hour 
@@ -36,8 +32,6 @@
                                             {% endif %}
                                         {% endif %}
                                     </p>
-                                        <!--The get_total_hours is a user-defined filter created at 
-                                                                                the templatetags->app_filters.py file-->
                                 {% endfor %}
                             </div>
                     </div>

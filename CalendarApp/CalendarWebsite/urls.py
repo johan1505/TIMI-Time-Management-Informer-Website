@@ -26,6 +26,12 @@ urlpatterns = [
     path('login/',  auth_views.LoginView.as_view(template_name = 'users/formBase.html', extra_context={'type':'login'}), name ='Calendar-login'),
     path('logout/',  auth_views.LogoutView.as_view(template_name = 'calendar/home.html'), name ='Calendar-logout'),
     path('', include('Calendar.urls'), name = 'Calendar-home'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name = 'users/formBase.html', extra_context={'type': 'resetPassword'}), name ='password_reset'),
+    path('password-reset-done', auth_views.PasswordResetDoneView.as_view(template_name = 'users/password_reset_done.html'), name ='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name = 'users/formBase.html', extra_context={'type': 'resetPasswordConfirm'}), name ='password_reset_confirm'),
+    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name = 'users/password_reset_complete.html'), name ='password_reset_complete'),
 ]
 
 handler403= 'Users.views.permission_denied'
+
+# 'messages': {% messages.success(request, f'Your account has been created! You are able to log in now!')%}
