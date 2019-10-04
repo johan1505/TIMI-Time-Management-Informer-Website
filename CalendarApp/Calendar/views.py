@@ -82,30 +82,20 @@ class OAuth2CallBack(View):
             return redirect('Calendar-User-Summaries')
 
         oauth2 = BuildFlow() # Build a flow
-        credentials = oauth2.flow.step2_exchange(code) #Exchanges a code for OAuth2Credentials. 
-                                                       #Returns An OAuth2Credentials object that can be used to authorize requests.
-
+        credentials = oauth2.flow.step2_exchange(code) #Exchanges a code for OAuth2Credentials. Returns An OAuth2Credentials object that can be used to authorize requests.
         http = httplib2.Http()
         http = credentials.authorize(http)                 # authorize credentials
-
         credentials_js = json.loads(credentials.to_json()) # creates a json file from the credentials
         access_token = credentials_js['access_token']      # Store the access token in case we need it again!
         request.session['access_token'] = access_token
         service = build('calendar', 'v3', credentials=credentials) # Create a service TO USE GOOGLE CALENDAR API calls
-
         times = setTimes()
         startDate = times[0] # Closest Monday 
         endDate = times[1]   # Closest Sunday
-
         # create an event result with timeMin and timeMax
-        #PROBLEM: RETURNS A LIST OF EVENTS THAT IS NOT ACCURATE. THE EVENT 
-        events_result = service.events().list(calendarId='primary', timeMin=startDate,
-                                        timeMax=endDate, singleEvents=True,
-                                        orderBy='startTime').execute() 
-
-        
-        events = events_result.get('items', [])            # events is a list of dictionaries. Each dictionary contains information of an event
-        
+        #PROBLEM: RETURNS A LIST OF EVENTS THAT IS NOT ACCURATE.
+        events_result = service.events().list(calendarId='primary', timeMin=startDate, timeMax=endDate, singleEvents=True, orderBy='startTime').execute() 
+        events = events_result.get('items', [])           # events is a list of dictionaries. Each dictionary contains information of an event
         userSummary = Summary(user = self.request.user, activities = [], times = [], startDate = startDate, endDate = endDate)# Creates a summary for the current user logged in
         eventsFound = {}                                   # HashTable for events found
 

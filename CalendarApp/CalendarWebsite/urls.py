@@ -17,14 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from Users import views as user_views # import User views
 from django.contrib.auth import views as auth_views #Import views for authentication
-from django.contrib import messages
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('profile/', user_views.profile, name = 'Calendar-profile'),
     path('register/', user_views.register, name = 'Calendar-register'),
-    path('login/',  auth_views.LoginView.as_view(template_name = 'users/formBase.html', extra_context={'type':'login'}), name ='Calendar-login'),
-    path('logout/',  auth_views.LogoutView.as_view(template_name = 'calendar/home.html'), name ='Calendar-logout'),
+    path('login/',  auth_views.LoginView.as_view(template_name = 'Users/formBase.html', extra_context={'type':'login'}), name ='Calendar-login'),
+    path('logout/',  auth_views.LogoutView.as_view(template_name = 'Calendar/home.html'), name ='Calendar-logout'),
     path('', include('Calendar.urls'), name = 'Calendar-home'),
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name = 'users/formBase.html', extra_context={'type': 'resetPassword'}), name ='password_reset'),
     path('password-reset-done', auth_views.PasswordResetDoneView.as_view(template_name = 'users/password_reset_done.html'), name ='password_reset_done'),

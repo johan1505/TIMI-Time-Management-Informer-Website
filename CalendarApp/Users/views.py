@@ -9,9 +9,6 @@ def permission_denied(request, exception): # 403 Error view. Instead of showing 
     messages.warning(request, f'You do not have permission to access the requested summary')
     return redirect('Calendar-profile')
 
-def handler404(request, exception):
-    messages.warning(request, f'You tried to access an non-existent destination of CalendarCalc')
-    return redirect('Calendar-home')
 
 def register(request):
     if request.method == 'POST': # When the user tries to sign up with a new account a request is created and is checked here 
@@ -43,5 +40,6 @@ def profile(request):
     context = { # Insert forms in a context
         'u_form' : u_form,
     }
-
     return render(request, 'users/profile.html', context)
+
+        
