@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, DeleteView, View
-from .models import Summary
+from .models import Event, Summary
 from django.contrib.auth.models import User
 from datetime import timedelta, date
 
@@ -64,7 +64,7 @@ def setTimes():
 
     # Make both startDate and endDate begin from 0 times
     #startDate = datetime.datetime.combine(startDate, startDate.min.time()) 
-    endDate = datetime.datetime.combine(endDate, endDate.max.time())
+    #endDate = datetime.datetime.combine(endDate, endDate.max.time())
     startDate = startDate.isoformat() + 'Z' # Stores the nearest Monday from today
     endDate = endDate.isoformat() + 'Z' # Stores the nearest Sunday from today
     return (startDate, endDate)
@@ -96,7 +96,7 @@ class OAuth2CallBack(View):
         #PROBLEM: RETURNS A LIST OF EVENTS THAT IS NOT ACCURATE.
         events_result = service.events().list(calendarId='primary', timeMin=startDate, timeMax=endDate, singleEvents=True, orderBy='startTime').execute() 
         events = events_result.get('items', [])           # events is a list of dictionaries. Each dictionary contains information of an event
-        userSummary = Summary(user = self.request.user, activities = [], times = [], startDate = startDate, endDate = endDate)# Creates a summary for the current user logged in
+        userSummary = Summary(user = self.request.user, startDate = startDate, endDate = endDate)# Creates a summary for the current user logged in
         eventsFound = {}                                   # HashTable for events found
 
         if not events:
@@ -106,17 +106,26 @@ class OAuth2CallBack(View):
             for event in events: 
                 startTime = datetime.datetime.strptime(event['start'].get('dateTime'), '%Y-%m-%dT%H:%M:%S%z')
                 endTime = datetime.datetime.strptime(event['end'].get('dateTime'), '%Y-%m-%dT%H:%M:%S%z')
-                timeSpentInEvent = endTime - startTime     # this is a datetime.timedelta object
+                timeSpentInEvent = endTime - startTime    
                 if event['summary'] in eventsFound:
-                    eventsFound[event['summary']] = eventsFound[event['summary']] + timeSpentInEvent # add the time of the evend already found
+                    # Add the time of the evend already found
+                    eventsFound[event['summary']] = eventsFound[event['summary']] + timeSpentInEvent 
                 else :     
-                    eventsFound[event['summary']] = timeSpentInEvent # gets how long the event lasts = set it equal to the time the event lasted
+                    # Gets how long the event lasts = set it equal to the time the event lasted
+                    eventsFound[event['summary']] = timeSpentInEvent 
 
-            for event in eventsFound:                        # For every event found
-                userSummary.activities.append(event)         # append the current event title
-                userSummary.times.append(eventsFound[event]) # append the timeSpent of the current event
+            userSummary.save()
+            for event in eventsFound:                  
+                currentEvent = Event(eventTitle = event, durationTime = eventsFound[event])
+                currentEvent.save()
+                userSummary.events.add(currentEvent)
+            userSummary.save() 
+            events = userSummary.events.all()
+          #  for event in events:
+            #    print(event.eventTitle)
+            #   print(event.durationTime)
+            #    print("")
 
-            userSummary.save()                               # save the constructed summary
         return HttpResponseRedirect(reverse('Calendar-User-Summaries'))
 
 class UserSummariesListView(LoginRequiredMixin, ListView):
@@ -129,22 +138,25 @@ class UserSummariesListView(LoginRequiredMixin, ListView):
       # user = get_object_or_404(User, username=self.kwargs.get('username')) # Get an user that matches the  username passed in by the URL
         return Summary.objects.filter(user=self.request.user).order_by('-startDate') # Filter the query to only get the posts with author = current user
 
-
 class SummaryDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Summary
     template_name = 'Calendar/summary_detail.html'
-    def test_func(self):         
-        summary = self.get_object() # Get the summary that is being updated
-        if self.request.user == summary.user: # If the current user is the author of the post then allow it him/her to update it
+    def test_func(self):  
+        # Get the summary that is being accessed       
+        summary = self.get_object() 
+        # If the current user is the creater of the summary then allow him/her to have access to
+        if self.request.user == summary.user: 
             return True
         return False
 
 class SummaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Summary
     success_url = "/Summaries"
-    def test_func(self):         
-        summary = self.get_object() # Get the summary that is being updated
-        if self.request.user == summary.user: # If the current user is the author of the post then allow it him/her to update it
+    def test_func(self):       
+        # Get the summary that is being deleted  
+        summary = self.get_object()
+        # If the current user is the creater of the summary then allow him/her to delete it
+        if self.request.user == summary.user:
             return True
         return False
 

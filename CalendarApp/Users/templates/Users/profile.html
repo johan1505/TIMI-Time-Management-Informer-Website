@@ -4,11 +4,13 @@
 <!--ADD TWO BUTTONS ONE TO GO TO THE PROFILE AND THE OTHER TO GO THE SUMMARIES-->
 
 <!--IF A PICTURE NEEDS TO BE ADDED, LOOK AT THE TUTORIAL SERIES PART 8!-->
-<div class="content-section">
-    <div class="media-body">
+
+
+<div class="content-section form-row ">
+    <div>
         <h2 class="account-heading">{{user.username}}</h2>
         <p class="text-secondary border-top pt-2">{{user.email}}</p>
-    </div> 
+    <div>
     <form method="POST">
         {% csrf_token %} <!--Token for security required by django-->
         <fieldset class="form-group">
@@ -20,7 +22,13 @@
             <a class="btn btn-outline-secondary" href="{% url 'Calendar-User-Summaries' %}">Summaries</a>
            <!--<a class="btn btn-outline-secondary" href="{% url 'password_reset' %}">Reset Password</a> FOR NOW LET'S JUST HAVE THE REQUEST RESET PASSWORD BUTTON AT THE LOG IN PAGE--> 
         </div>    
-
     </form>
+   <!-- {% for summary in currentSummaries %}
+    <div class="media summary-section mb-4">
+        <div class="article-metadata">
+            <a class="summary-title mr-2" href="{% url 'Calendar-Summary-Detail' summary.id %}">{{ summary.startDate|date:"F d, Y" }} - {{ summary.endDate|date:"F d, Y" }}</a>
+        </div>
+    </div>
+    {% endfor %} -->
 </div>
 {% endblock content %}

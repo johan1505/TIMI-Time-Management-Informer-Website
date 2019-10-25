@@ -5,30 +5,29 @@
         <!--<img class="rounder-circle article-img" src="{{ object.author.profile.image.url}}"> --> <!--Get the image of the posts' author-->
         <div class="media-body">
             <div class="article-metadata">
-                <h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
+               <h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1> -
                 <div class="container">
                     <div class="row mt-5">
                             <div class="col-6 col-sm-5">
-                                {% for activity in object.activities %}
-                                    <p> {{ activity }}  </p>
+                                {% for event in object.events.all %}
+                                    <p>{{ event.eventTitle }}</p>
                                 {% endfor %}
                             </div>
-                            <div class="col-6 col-sm-4">
-                                <!-- Note: The get_total_hours is a user-defined filter created at the templatetags->app_filters.py file-->
-                                {% for times in object.times %}
+                            <div class="col-6 col-sm-5">
+                                {% for event in object.events.all %}
                                     <p>
-                                        {% if times|get_total_hours %}
-                                            {% if times|get_total_hours == 1%}
-                                                {{ times|get_total_hours }} hour 
-                                            {% elif times|get_total_hours > 1 %}
-                                                {{ times|get_total_hours }} hours
+                                    {% if event.durationTime|get_total_hours %}
+                                            {% if event.durationTime|get_total_hours == 1%}
+                                                {{ event.durationTime|get_total_hours }} hour 
+                                            {% elif event.durationTime|get_total_hours > 1 %}
+                                                {{ event.durationTime|get_total_hours }} hours
                                             {% endif %}
                                         {% endif %}
-                                        {% if times|get_total_minutes %}
-                                            {% if times|get_total_minutes == 1%}
-                                                {{ times|get_total_minutes }} minute
-                                            {% elif times|get_total_minutes > 1 %}
-                                                {{ times|get_total_minutes }} minutes
+                                        {% if event.durationTime|get_total_minutes %}
+                                            {% if event.durationTime|get_total_minutes == 1%}
+                                                {{ event.durationTime|get_total_minutes }} minute
+                                            {% elif event.durationTime|get_total_minutes > 1 %}
+                                                {{ event.durationTime|get_total_minutes }} minutes
                                             {% endif %}
                                         {% endif %}
                                     </p>

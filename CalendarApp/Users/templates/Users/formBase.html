@@ -1,16 +1,16 @@
 {% extends "Calendar/base.html" %} <!--Extending the parent template-->
 {% load crispy_forms_tags %} <!--Load crispy files library-->
 {% block content %}
-    <div class="content-section">
+    <div class="content-section" style="width: 700px;">
             <form method="POST">
                 {% csrf_token %} <!--Token for security required by django-->
                 <fieldset class="form-group">
                     {% if type == "register" %}
-                        <legend class="border-bottom mb-4">Join Today</legend>
+                        <legend class="border-bottom mb-4 text-center">Join Today</legend>
                     {% elif type == "login" %}
-                        <legend class="border-bottom mb-4">Log In</legend>
+                        <legend class="border-bottom mb-4 text-center">Log In</legend>
                     {% elif type == "resetPassword" or type == "resetPasswordConfirm" %}
-                        <legend class="border-bottom mb-4">Reset Password</legend>
+                        <legend class="border-bottom mb-4 text-center">Reset Password</legend>
                     {% endif %}
                     {{ form|crispy }} <!--The verticual bar(|) is used to filter the form thorugh crispy_forms-->
                 </fieldset>
