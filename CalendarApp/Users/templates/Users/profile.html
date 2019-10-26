@@ -1,34 +1,40 @@
 {% extends "Calendar/base.html" %} 
 {% load crispy_forms_tags %}
+{% load app_filters %}
 {% block content %}
 <!--ADD TWO BUTTONS ONE TO GO TO THE PROFILE AND THE OTHER TO GO THE SUMMARIES-->
 
 <!--IF A PICTURE NEEDS TO BE ADDED, LOOK AT THE TUTORIAL SERIES PART 8!-->
 
-
-<div class="content-section form-row ">
-    <div>
-        <h2 class="account-heading">{{user.username}}</h2>
-        <p class="text-secondary border-top pt-2">{{user.email}}</p>
-    <div>
-    <form method="POST">
-        {% csrf_token %} <!--Token for security required by django-->
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>           
-            {{ u_form|crispy }}  <!--u_form and p_form were passed in as contexts from the profile fuction of users' views-->
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-outline-secondary" type="submit">Update</button> <!--the type "submit" allows the form t be submitted when the button is pressed-->
-            <a class="btn btn-outline-secondary" href="{% url 'Calendar-User-Summaries' %}">Summaries</a>
-           <!--<a class="btn btn-outline-secondary" href="{% url 'password_reset' %}">Reset Password</a> FOR NOW LET'S JUST HAVE THE REQUEST RESET PASSWORD BUTTON AT THE LOG IN PAGE--> 
-        </div>    
-    </form>
-   <!-- {% for summary in currentSummaries %}
-    <div class="media summary-section mb-4">
-        <div class="article-metadata">
-            <a class="summary-title mr-2" href="{% url 'Calendar-Summary-Detail' summary.id %}">{{ summary.startDate|date:"F d, Y" }} - {{ summary.endDate|date:"F d, Y" }}</a>
+<div class="content-section container">
+    <div class=row>
+        <div class="col-md-5">
+            <div>
+                <h2 class="account-heading">{{user.username}}</h2>
+                <p class="text-secondary border-top pt-2">{{user.email}}</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %} <!--Token for security required by django-->
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Profile Info</legend>           
+                    {{ u_form|crispy }}  <!--u_form and p_form were passed in as contexts from the profile fuction of users' views-->
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-secondary" type="submit">Update</button> <!--the type "submit" allows the form t be submitted when the button is pressed-->
+                    <a class="btn btn-outline-secondary" href="{% url 'Calendar-User-Summaries' %}">Summaries</a>
+                <!--<a class="btn btn-outline-secondary" href="{% url 'password_reset' %}">Reset Password</a> FOR NOW LET'S JUST HAVE THE REQUEST RESET PASSWORD BUTTON AT THE LOG IN PAGE--> 
+                </div>    
+            </form>
+        </div>
+        <div class="col-md-7">
+            <h3>Most Frequent events from the past 3 weeks</h3>
+            <div class="article-metadata">
+                {% for event in frequentEvents %}
+                    <p> {{ event.0 }} - {{ event.1|get_total_time }} </p>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    {% endfor %} -->
+</div>
 </div>
 {% endblock content %}

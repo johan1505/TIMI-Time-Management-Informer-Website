@@ -15,22 +15,7 @@
                             </div>
                             <div class="col-6 col-sm-5">
                                 {% for event in object.events.all %}
-                                    <p>
-                                    {% if event.durationTime|get_total_hours %}
-                                            {% if event.durationTime|get_total_hours == 1%}
-                                                {{ event.durationTime|get_total_hours }} hour 
-                                            {% elif event.durationTime|get_total_hours > 1 %}
-                                                {{ event.durationTime|get_total_hours }} hours
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if event.durationTime|get_total_minutes %}
-                                            {% if event.durationTime|get_total_minutes == 1%}
-                                                {{ event.durationTime|get_total_minutes }} minute
-                                            {% elif event.durationTime|get_total_minutes > 1 %}
-                                                {{ event.durationTime|get_total_minutes }} minutes
-                                            {% endif %}
-                                        {% endif %}
-                                    </p>
+                                    <p>{{event.durationTime|get_total_time}}</p>
                                 {% endfor %}
                             </div>
                     </div>
