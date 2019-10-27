@@ -1,11 +1,8 @@
 {% extends "Calendar/base.html" %} 
 {% load crispy_forms_tags %}
 {% load app_filters %}
+        
 {% block content %}
-<!--ADD TWO BUTTONS ONE TO GO TO THE PROFILE AND THE OTHER TO GO THE SUMMARIES-->
-
-<!--IF A PICTURE NEEDS TO BE ADDED, LOOK AT THE TUTORIAL SERIES PART 8!-->
-
 <div class="content-section container">
     <div class=row>
         <div class="col-md-5">
@@ -22,19 +19,61 @@
                 <div class="form-group">
                     <button class="btn btn-outline-secondary" type="submit">Update</button> <!--the type "submit" allows the form t be submitted when the button is pressed-->
                     <a class="btn btn-outline-secondary" href="{% url 'Calendar-User-Summaries' %}">Summaries</a>
-                <!--<a class="btn btn-outline-secondary" href="{% url 'password_reset' %}">Reset Password</a> FOR NOW LET'S JUST HAVE THE REQUEST RESET PASSWORD BUTTON AT THE LOG IN PAGE--> 
                 </div>    
             </form>
         </div>
         <div class="col-md-7">
-            <h3>Most Frequent events from the past 3 weeks</h3>
-            <div class="article-metadata">
-                {% for event in frequentEvents %}
-                    <p> {{ event.0 }} - {{ event.1|get_total_time }} </p>
-                {% endfor %}
+            <h3>Most frequent events from past 3 weeks</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Event</th>
+                    <th scope="col">Time Spent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in frequentEvents %}
+                    <tr>
+                        <th scope="row"></th>
+                            <td><i class="fas fa-circle" style= "color: {{event.1|get_color}};"> </i> {{event.0 }}</td>
+                            <td>{{ event.1|get_total_time_string }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="container">
+                <canvas id="eventsChart" class="mt-5"></canvas>
             </div>
+            <script>
+                var fev = [];
+                var fevt = [];
+                var colors = [];
+                {% for event in frequentEvents%}
+                    fev.push("{{event.0}}");
+                    fevt.push({{event.1|get_total_time_chart_value}});
+                    colors.push("{{event.1|get_color}}");
+                {% endfor %}
+
+                var eventsChart = document.getElementById('eventsChart').getContext('2d');
+                var frequentEventsChart = new Chart(eventsChart, {
+                type: 'doughnut',
+                data:{
+                    datasets:[{
+                        label: 'Most frequent events',
+                        data: fevt,
+                        backgroundColor: colors,
+                        borderWidth: 1
+                    }],
+                    labels: fev
+                },
+                options: {
+                    legend: false,
+                    events: []
+                }
+                });
+            </script>
         </div>
     </div>
-</div>
 </div>
 {% endblock content %}

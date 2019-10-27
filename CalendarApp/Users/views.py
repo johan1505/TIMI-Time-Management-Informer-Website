@@ -6,6 +6,8 @@ from datetime import timedelta
 from Calendar.models import Summary, Event
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView 
+from rest_framework.response import Response    
 
  # 403 Error view. Instead of showing a 403 text, it will redirect the user to his profile with a message that informs that he/she does not have permissions
 def permission_denied(request, exception):
@@ -56,10 +58,18 @@ def getMostFrequentEvents(Summaries):
                 frequentEvent = (event, UniqueEvents[event])
         UniqueEvents.pop(tempEventKey)
         frequentEvents.append(frequentEvent)
-    
+
     return frequentEvents
 
-     
+#class UserProfile(APIView):
+   
+   # authentication_classes = []
+   # permission_classes = []
+
+  # def get(self, request, format=None):
+        
+  #      return()
+
 @login_required
 def profile(request):
     currentSummaries = getCurrentSummaries(request.user)

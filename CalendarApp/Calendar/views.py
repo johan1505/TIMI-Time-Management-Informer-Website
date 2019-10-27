@@ -155,12 +155,18 @@ class SummaryDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         if self.request.user == summary.user: 
             return True
         return False
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in the publisher
+        context['events'] = self.get_object().events.all().order_by('-durationTime')
+        return context
 
 class SummaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Summary
     success_url = "/Summaries"
     def test_func(self):       
-        # Get the summary that is being deleted  
+        # Get the summary that is being deleted     
         summary = self.get_object()
         # If the current user is the creater of the summary then allow him/her to delete it
         if self.request.user == summary.user:

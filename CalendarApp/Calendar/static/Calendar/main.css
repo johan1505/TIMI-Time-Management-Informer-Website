@@ -10,6 +10,10 @@ body {
   margin-top: 40px;
 }
 
+.event-section{
+  border-radius: 5px;
+}
+
 .navigationBarIcons{
   font-size:15px;
   margin: 4px;
@@ -28,7 +32,7 @@ ul {
 }
 
 .bg-steel {
-  background-color: #55d6aa;
+  background-color: #00a8ff;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -101,7 +105,7 @@ a.article-title:hover {
 
 .summary-section{
   width: 500px;
-  background:#55d6aa;
+  background:#00a8ff;
   border: 5px solid #ffffff;
   margin-bottom: 20px;;
   padding: 15px 80px;

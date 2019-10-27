@@ -1,28 +1,63 @@
 {% extends "Calendar/base.html" %}
 {% load app_filters %}
 {% block content %}
-<article class="media content-section">
-        <!--<img class="rounder-circle article-img" src="{{ object.author.profile.image.url}}"> --> <!--Get the image of the posts' author-->
-        <div class="media-body">
-            <div class="article-metadata">
-               <h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1> -
-                <div class="container">
-                    <div class="row mt-5">
-                            <div class="col-6 col-sm-5">
-                                {% for event in object.events.all %}
-                                    <p>{{ event.eventTitle }}</p>
-                                {% endfor %}
-                            </div>
-                            <div class="col-6 col-sm-5">
-                                {% for event in object.events.all %}
-                                    <p>{{event.durationTime|get_total_time}}</p>
-                                {% endfor %}
-                            </div>
-                    </div>
-                </div>
-            </div>
+<h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
+<div class="media content-section">
+    <div class="container">
+        <div class="row mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Event</th>
+                    <th scope="col">Time Spent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <th scope="row"></th>
+                            <td> <i class="fas fa-circle" style= "color: {{event.durationTime|get_color}};"></i> {{ event.eventTitle }}</td>
+                            <td>{{ event.durationTime|get_total_time_string }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-</article>
+        <div>
+            <canvas id="eventsChart" class="mt-5"></canvas>
+        </div>
+        <script>
+            var fev = [];
+            var fevt = [];
+            var colors = [];
+            {% for event in events %}
+                fev.push("{{event.eventTitle}}");   
+                fevt.push({{event.durationTime|get_total_time_chart_value}});
+                colors.push("{{event.durationTime|get_color}}")
+            {% endfor %} 
+            var eventsChart = document.getElementById('eventsChart').getContext('2d');
+            var frequentEventsChart = new Chart(eventsChart, {
+            type: 'doughnut',
+            data:{
+                datasets:[{
+                    label: 'Summary',
+                    data: fevt,
+                    backgroundColor: colors,  
+                }],
+                labels: fev,
+            },    
+            options: {
+                events: [
+                    'mousemove'
+                ],
+                legend: false,
+                showTooltips: false
+            }
+            });
+        </script>
+    </div>
+</div>
 <div>           
     <a class="btn btn-outline-danger mt-1 mb-1" href="{% url 'Calendar-Summary-Delete' object.id %}">Delete</a>
     <a class="btn btn-outline-secondary mt-1 mb-1" href="{% url 'Calendar-User-Summaries' %}">Back to Summaries</a>           
