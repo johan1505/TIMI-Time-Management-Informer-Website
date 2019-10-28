@@ -32,8 +32,7 @@ def register(request):
 
 def getCurrentSummaries(User):
     today = datetime.datetime.today()
-    endDate = today.isoformat() + 'Z' 
-    # startDate will be 3 weeks before today
+    endDate = (today + timedelta(days=7)).isoformat() + 'Z'     
     startDate = (today - timedelta(days=21)).isoformat() + 'Z' 
     currentSummaries = Summary.objects.filter(user = User, startDate__range = (startDate, endDate))
     return list(currentSummaries)  
@@ -41,6 +40,8 @@ def getCurrentSummaries(User):
 def getMostFrequentEvents(Summaries):
     UniqueEvents = {}
     #Identify all unique events and their duration times
+    if len(Summaries) == 0:
+        return []
     for Summary in Summaries:
         for event in Summary.events.all():
             if event.eventTitle not in UniqueEvents:
@@ -48,7 +49,7 @@ def getMostFrequentEvents(Summaries):
             else:
                 UniqueEvents[event.eventTitle] = UniqueEvents[event.eventTitle] + event.durationTime
     frequentEvents = []
-  
+
     # Get the 5 most frequent events
     for i in range(0, 5):  
         frequentEvent = ("" , timedelta(days=0))
@@ -61,19 +62,12 @@ def getMostFrequentEvents(Summaries):
 
     return frequentEvents
 
-#class UserProfile(APIView):
-   
-   # authentication_classes = []
-   # permission_classes = []
-
-  # def get(self, request, format=None):
-        
-  #      return()
-
 @login_required
 def profile(request):
     currentSummaries = getCurrentSummaries(request.user)
     frequentEvents = getMostFrequentEvents(currentSummaries)
+    if len(frequentEvents) == 0:
+        messages.warning(request, f'Not enough summaries on these past 3 weeks')
 
     # Note: Adding the instances parameters will populate the forms with the user's and profile's information respectively 
     if request.method == 'POST': 
