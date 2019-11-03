@@ -112,7 +112,7 @@ class OAuth2CallBack(View):
         eventsFound = {}                                 
 
         if not events:
-            messages.warning(request, f'The Google account that was linked to yout account has no calendars for this week!s')
+            messages.warning(request, f'The Google account provided has no calendars for this week!')
             return redirect('Calendar-User-Summaries')
         else :
             for event in events: 
