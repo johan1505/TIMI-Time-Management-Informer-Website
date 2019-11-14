@@ -9,7 +9,7 @@ TIMI generates summaries of how much time a user has spent or will spend per eve
 
 ### Website's main page:
 
- ![Main page](Images/TIMI_main_page.png =100x100)
+ ![Main page|100x100](Images/TIMI_main_page.png)
 
 ### Profile page:
 
