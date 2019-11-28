@@ -84,14 +84,11 @@ ul {
 }
 
 .summary-section{
-  width: 500px;
+  width: 525px;
   background:#00a8ff;
   border: 5px solid #ffffff;
-  margin-bottom: 20px;;
-  padding: 15px 80px;
-  border-radius: 20px;
-  padding-bottom: 15px;
-  margin-bottom: 4px;
+  padding: 16px 70px;
+  border-radius: 50px;
 }
 
 .summary-section a:hover{

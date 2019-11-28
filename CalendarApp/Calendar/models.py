@@ -13,5 +13,6 @@ class Event(models.Model):
 class Summary(models.Model):
     user = models.ForeignKey(User, on_delete="CASCADE")
     events = models.ManyToManyField(Event)
+    creationDate = models.DateTimeField(default = timezone.now)
     startDate = models.DateTimeField(default = timezone.now) 
     endDate = models.DateTimeField(default = timezone.now)

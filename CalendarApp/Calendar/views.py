@@ -127,12 +127,14 @@ class OAuth2CallBack(View):
                     eventsFound[event['summary']] = timeSpentInEvent 
 
             userSummary.save()
+
             for event in eventsFound:                  
                 currentEvent = Event(eventTitle = event, durationTime = eventsFound[event])
                 currentEvent.save()
                 userSummary.events.add(currentEvent)
             userSummary.save() 
             events = userSummary.events.all()
+            
         return HttpResponseRedirect(reverse('Calendar-User-Summaries'))
 
 class UserSummariesListView(LoginRequiredMixin, ListView):

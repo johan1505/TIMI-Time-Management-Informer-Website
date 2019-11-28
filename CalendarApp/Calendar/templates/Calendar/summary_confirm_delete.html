@@ -6,12 +6,13 @@
             {% csrf_token %} <!--Token for security required by django-->
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Delete Summary</legend> 
-                <h2>Are you sure you wanto to delete the Summary of week: <br>
-                    {{ object.startDate|date:"F d, Y" }} -- {{ object.endDate|date:"F d, Y" }}</h2>
+                <h4>Are you sure you wanto to delete the Summary of week:</h4>
+                <br>
+                <h5>{{ object.startDate|date:"F d, Y" }} -- {{ object.endDate|date:"F d, Y" }}</h5>
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
-                <a class="btn btn-outline-secondary" href="{% url 'Calendar-Summary-Detail' object.id %}">Cancel</a>
+            <div class="form-group mt-5">
+                <button class="btn btn-danger rounded-pill" type="submit">Yes, Delete</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
+                <a class="btn btn-primary rounded-pill" href="{% url 'Calendar-Summary-Detail' object.id %}">Cancel</a>
             </div>                                                                   
         </form>
    </div>

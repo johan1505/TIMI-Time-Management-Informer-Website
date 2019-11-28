@@ -5,9 +5,7 @@ import datetime
 from datetime import timedelta
 from Calendar.models import Summary, Event
 from .forms import UserRegisterForm, UserUpdateForm
-from django.contrib.auth.decorators import login_required
-from rest_framework.views import APIView 
-from rest_framework.response import Response    
+from django.contrib.auth.decorators import login_required 
 
  # 403 Error view. Instead of showing a 403 text, it will redirect the user to his profile with a message that informs that he/she does not have permissions
 def permission_denied(request, exception):

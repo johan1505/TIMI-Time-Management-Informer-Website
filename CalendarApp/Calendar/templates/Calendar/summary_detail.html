@@ -1,9 +1,11 @@
 {% extends "Calendar/base.html" %}
 {% load app_filters %}
 {% block content %}
-<h4 class="text-muted">{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
 <div class="media content-section">
     <div class="container">
+        <h1>{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
+        <h5 class="text-muted">Summary created at: {{ object.creationDate|date:"F d, Y" }}</h5>
+        <h5 class="text-muted">Number of events: {{ object.events.all.count }}</h5>
         <div class="row mt-3">
             <table class="table table-hover">
                 <thead>
@@ -38,22 +40,22 @@
             {% endfor %} 
             var eventsChart = document.getElementById('eventsChart').getContext('2d');
             var frequentEventsChart = new Chart(eventsChart, {
-            type: 'doughnut',
-            data:{
-                datasets:[{
-                    label: 'Summary',
-                    data: fevt,
-                    backgroundColor: colors,  
-                }],
-                labels: fev,
-            },    
-            options: {
-                events: [
-                    'mousemove'
-                ],
-                legend: false,
-                showTooltips: false
-            }
+                type: 'doughnut',
+                data:{
+                    datasets:[{
+                        label: 'Summary',
+                        data: fevt,
+                        backgroundColor: colors,  
+                    }],
+                    labels: fev,
+                },    
+                options: {
+                    events: [
+                        'mousemove'
+                    ],
+                    legend: false,
+                    showTooltips: false
+                }
             });
         </script>
     </div>
