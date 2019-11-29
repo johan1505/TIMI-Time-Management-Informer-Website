@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm # Package used to enable user authentication and the use of forms
+# Package used to enable user authentication and the use of forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 import datetime
 from datetime import timedelta
@@ -46,8 +47,8 @@ def getMostFrequentEvents(Summaries):
                 UniqueEvents[event.eventTitle] = event.durationTime
             else:
                 UniqueEvents[event.eventTitle] = UniqueEvents[event.eventTitle] + event.durationTime
-    frequentEvents = []
 
+    frequentEvents = []
     # Get the 5 most frequent events
     for i in range(0, 5):  
         frequentEvent = ("" , timedelta(days=0))

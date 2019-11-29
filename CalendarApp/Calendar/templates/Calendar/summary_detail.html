@@ -3,9 +3,25 @@
 {% block content %}
 <div class="media content-section">
     <div class="container">
-        <h1>{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h1>
-        <h5 class="text-muted">Summary created at: {{ object.creationDate|date:"F d, Y" }}</h5>
-        <h5 class="text-muted">Number of events: {{ object.events.all.count }}</h5>
+        <div class="row mt-3">
+            <div class="col-10">
+                <h2>{{ object.startDate|date:"F d, Y" }} - {{ object.endDate|date:"F d, Y" }}</h2>
+            </div>
+            <div class="col-2">
+                <a class="btn btn-danger rounded-pill" href="{% url 'Calendar-Summary-Delete' object.id %}">Delete</a>
+                <a class="btn btn-primary rounded-pill" href="{% url 'Calendar-User-Summaries' %}">Back</a>  
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <h5 class="text-muted">Summary created at: {{ object.creationDate|date:"F d, Y" }}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h5 class="text-muted">Number of events: {{ object.events.all.count }}</h5>
+            </div>
+        </div>
         <div class="row mt-3">
             <table class="table table-hover">
                 <thead>
@@ -60,8 +76,4 @@
         </script>
     </div>
 </div>
-<div>           
-    <a class="btn btn-outline-danger mt-1 mb-1" href="{% url 'Calendar-Summary-Delete' object.id %}">Delete</a>
-    <a class="btn btn-outline-secondary mt-1 mb-1" href="{% url 'Calendar-User-Summaries' %}">Back to Summaries</a>           
-</div> 
 {% endblock content %}

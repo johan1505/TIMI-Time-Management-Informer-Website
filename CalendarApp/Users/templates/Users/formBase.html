@@ -1,40 +1,42 @@
 {% extends "Calendar/base.html" %} <!--Extending the parent template-->
 {% load crispy_forms_tags %} <!--Load crispy files library-->
 {% block content %}
-    <div class="content-section" style="width: 700px;">
-            <form method="POST">
-                {% csrf_token %} <!--Token for security required by django-->
-                <fieldset class="form-group">
-                    {% if type == "register" %}
-                        <legend class="border-bottom mb-4 text-center">Join Today</legend>
-                    {% elif type == "login" %}
-                        <legend class="border-bottom mb-4 text-center">Log In</legend>
-                    {% elif type == "resetPassword" or type == "resetPasswordConfirm" %}
-                        <legend class="border-bottom mb-4 text-center">Reset Password</legend>
-                    {% endif %}
-                    {{ form|crispy }} <!--The verticual bar(|) is used to filter the form thorugh crispy_forms-->
-                </fieldset>
-                <div class="form-group">
-                    {% if type == "register" %}
-                        <button class="btn btn-outline-secondary" type="submit">Sign Up</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
-                    {% elif type == "login" %}                                                <!--By pressing submit, it is going to do a post requet back to the its route with the data from the form--> 
-                        <button class="btn btn-outline-secondary" type="submit">Log In</button>
-                        <small class="text-muted"><a href="{% url 'password_reset' %}">Forgot Password?</a></small>
-                    {% elif type == "resetPassword" or type == "resetPasswordConfirm" %}
-                        <button class="btn btn-outline-secondary" type="submit">Reset Password</button>
-                    {% endif %}
-                </div>                                                                 
-            </form>
-            {% if type != "resetPassword" and type != "resetPasswordConfirm" %}
-                <div class="border-top pt-3">
-                    <small class="text-muted">
+    <div class="row justify-content-md-center">
+        <div class="content-section" style="width: 700px;">
+                <form method="POST">
+                    {% csrf_token %} <!--Token for security required by django-->
+                    <fieldset class="form-group">
                         {% if type == "register" %}
-                            Already Have An Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-login' %}">Log In</a>
+                            <legend class="border-bottom mb-4 text-center">Join Today</legend>
                         {% elif type == "login" %}
-                            Need  a New Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-register' %}">Sign Up</a>
+                            <legend class="border-bottom mb-4 text-center">Log In</legend>
+                        {% elif type == "resetPassword" or type == "resetPasswordConfirm" %}
+                            <legend class="border-bottom mb-4 text-center">Reset Password</legend>
                         {% endif %}
-                    </small>
-                </div>
-            {% endif %}
+                        {{ form|crispy }} <!--The verticual bar(|) is used to filter the form thorugh crispy_forms-->
+                    </fieldset>
+                    <div class="form-group">
+                        {% if type == "register" %}
+                            <button class="btn btn-outline-primary rounded-pill" type="submit">Sign Up</button> <!--the type "submit" allows the form to be submitted when the button is pressed-->
+                        {% elif type == "login" %}                                                <!--By pressing submit, it is going to do a post requet back to the its route with the data from the form--> 
+                            <button class="btn btn-outline-primary rounded-pill" type="submit">Log In</button>
+                            <small class="text-muted"><a href="{% url 'password_reset' %}">Forgot Password?</a></small>
+                        {% elif type == "resetPassword" or type == "resetPasswordConfirm" %}
+                            <button class="btn btn-outline-primary rounded-pill" type="submit">Reset Password</button>
+                        {% endif %}
+                    </div>                                                                 
+                </form>
+                {% if type != "resetPassword" and type != "resetPasswordConfirm" %}
+                    <div class="border-top pt-3">
+                        <small class="text-muted">
+                            {% if type == "register" %}
+                                Already Have An Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-login' %}">Log In</a>
+                            {% elif type == "login" %}
+                                Need  a New Account? <a class="ml-2" style="color:#444444;" href="{% url 'Calendar-register' %}">Sign Up</a>
+                            {% endif %}
+                        </small>
+                    </div>
+                {% endif %}
+        </div>
     </div>
 {% endblock content %}
