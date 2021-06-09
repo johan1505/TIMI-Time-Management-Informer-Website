@@ -3,7 +3,7 @@ cachetools==3.1.1
 certifi==2019.9.11
 chardet==3.0.4
 colorama==0.4.1
-Django==2.2.5
+Django==2.2.22
 django-crispy-forms==1.7.2
 django-environ==0.4.5
 django-filter==2.2.0
